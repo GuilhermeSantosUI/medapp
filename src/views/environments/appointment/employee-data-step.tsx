@@ -9,6 +9,8 @@ export function EmployeeDataStep() {
   const navigate = useNavigate();
   return (
     <>
+      <hr className="border-b-[10px] border-[#f5f5f5]" />
+
       <div className="container max-w-[1024px] flex-auto flex flex-col py-6">
         <div className="flex items-center gap-2">
           <Button className="rounded-xl flex items-center justify-center gap-2">
@@ -24,7 +26,7 @@ export function EmployeeDataStep() {
         </div>
 
         <div className="flex gap-8 flex-auto mt-4">
-          <div className=" w-full max-w-[400px]">
+          <div className="w-full max-w-[400px]">
             <h1 className="text-2xl mb-2 font-medium">Dados do Colaborador</h1>
 
             <p className="font-light text-slate-400">

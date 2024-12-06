@@ -1,13 +1,13 @@
+import { Button } from '@/views/components/ui/button';
+import { Form } from '@/views/components/ui/form';
+import { InputFormItem } from '@/views/components/ui/input-form-item';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowUpRight, Eye, EyeSlash, SpinnerGap } from '@phosphor-icons/react';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ArrowUpRight, Eye, EyeSlash, SpinnerGap } from '@phosphor-icons/react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import * as z from 'zod';
-
-import { Form } from '@/views/components/ui/form';
-import { Button } from '@/views/components/ui/button';
-import { InputFormItem } from '@/views/components/ui/input-form-item';
 
 const schema = z.object({
   login: z
@@ -83,7 +83,7 @@ export function SignIn() {
                 <InputFormItem
                   control={form.control}
                   name="login"
-                  label="CPF"
+                  label="CPF/CNPJ"
                   type="text"
                   className="h-fit px-4 py-2 text-base"
                   tabIndex={1}
@@ -99,6 +99,13 @@ export function SignIn() {
                   placeholder="********"
                   description="Informe uma senha de 8 caracteres ou mais para acessar o sistema."
                   type={passwordType ? 'password' : 'text'}
+                  children={
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs text-slate-400 hover:underline">
+                      Esqueceu a senha?
+                    </Link>
+                  }
                   actions={
                     <button
                       type="button"

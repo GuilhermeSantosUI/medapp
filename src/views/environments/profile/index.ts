@@ -1,2 +1,2 @@
 export * from './personal';
-export * from './reset-password';
+export * from './security';

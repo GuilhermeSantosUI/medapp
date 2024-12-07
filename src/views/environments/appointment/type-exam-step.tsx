@@ -1,4 +1,5 @@
 import { Button } from '@/views/components/ui/button';
+import { Textarea } from '@/views/components/ui/textarea';
 import {
   ArrowCircleUp,
   Brain,
@@ -12,6 +13,7 @@ import {
   Virus,
   Wheelchair,
 } from '@phosphor-icons/react';
+import { Label } from '@radix-ui/react-dropdown-menu';
 import { ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -53,7 +55,7 @@ export function TypeExamStep() {
     <>
       <hr className="border-b-[10px] border-[#f5f5f5]" />
 
-      <div className="container max-w-[1024px] flex-auto flex flex-col py-6">
+      <div className="animate-slidein600 opacity-0 container max-w-[1024px] flex-auto flex flex-col py-6">
         <div className="flex items-center gap-2">
           <Button className="rounded-xl flex items-center justify-center gap-2">
             <p className="font-normal">6/8</p>
@@ -100,6 +102,17 @@ export function TypeExamStep() {
                   </button>
                 </div>
               ))}
+            </div>
+
+            <div className="w-full flex flex-col gap-2">
+              <Label>
+                Observações
+                <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
+                placeholder="Informe o CPF"
+                className="w-full min-h-[200px] rounded-xl"
+              />
             </div>
 
             <div className="flex gap-2 mt-auto">

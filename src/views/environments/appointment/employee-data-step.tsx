@@ -11,7 +11,7 @@ export function EmployeeDataStep() {
     <>
       <hr className="border-b-[10px] border-[#f5f5f5]" />
 
-      <div className="container max-w-[1024px] flex-auto flex flex-col py-6">
+      <div className="animate-slidein600 opacity-0 container max-w-[1024px] flex-auto flex flex-col py-6">
         <div className="flex items-center gap-2">
           <Button className="rounded-xl flex items-center justify-center gap-2">
             <p className="font-normal">6/8</p>

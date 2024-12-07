@@ -1,9 +1,8 @@
 import { QueryClient } from '@tanstack/react-query';
-
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: '',
+  baseURL: 'https://sesmt-gestor.paulorobertodev.com.br/api',
 });
 
 export const queryClient = new QueryClient({

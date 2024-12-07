@@ -8,17 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/views/components/ui/card';
-import {
-  AsoTable,
-  AsoFindDialog,
-  AsoCompliance,
-} from '@/views/environments/admin/components';
 import { Input } from '@/views/components/ui/input';
+import {
+  AsoCompliance,
+  AsoFindDialog,
+  AsoTable,
+} from '@/views/environments/admin/components';
 
 export function Dashboard() {
   return (
     <div>
-      <div className="flex items-end justify-start gap-2 py-8 px-4 pb-6 border-b">
+      <div className="animate-slidein200 opacity-0 flex items-end justify-start gap-2 py-8 px-4 pb-6 border-b">
         <h1 className="text-3xl">Início</h1>
         <p className="text-sm text-zinc-400">
           {String(endOfDay(new Date()).getDate()).padStart(2, '0')}
@@ -27,7 +27,7 @@ export function Dashboard() {
 
       <hr className="border-b-[10px] border-[#f5f5f5]" />
 
-      <main className="grid flex-1 items-start gap-4 p-4 sm:px-4 md:gap-8 xl:grid-cols-2">
+      <main className="animate-slidein600 opacity-0 grid flex-1 items-start gap-4 p-4 sm:px-4 md:gap-8 xl:grid-cols-2">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-6">
             <Card

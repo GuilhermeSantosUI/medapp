@@ -30,6 +30,14 @@ const config = {
         },
       },
       keyframes: {
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        },
+        slidein: {
+          from: { opacity: '0', transform: 'translateY(-10px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -38,43 +46,14 @@ const config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
-        grid: {
-          '0%': { transform: 'translateY(-50%)' },
-          '100%': { transform: 'translateY(0)' },
-        },
-        marquee: {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(calc(-100% - var(--gap)))' },
-        },
-        'marquee-vertical': {
-          from: { transform: 'translateY(0)' },
-          to: { transform: 'translateY(calc(-100% - var(--gap)))' },
-        },
-        crumple: {
-          '0%': { 'letter-spacing': 'normal' },
-          '100%': { 'letter-spacing': '-0.05em' },
-        },
-        slidein: {
-          from: {
-            opacity: '0',
-            transform: 'translateY(-10px)',
-          },
-          to: {
-            opacity: '1',
-            transform: 'translateY(0)',
-          },
-        },
       },
       animation: {
+        wiggle: 'wiggle 200ms ease-in-out',
+        slidein200: 'slidein 1s ease 200ms forwards',
+        slidein400: 'slidein 1s ease 400ms forwards',
+        slidein600: 'slidein 1s ease 600ms forwards',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        grid: 'grid 15s linear infinite',
-        slidein300: 'slidein 1s ease 300ms forwards',
-        slidein500: 'slidein 1s ease 500ms forwards',
-        slidein700: 'slidein 1s ease 700ms forwards',
-        crumpleafter: 'crumple 1s ease 2s forwards',
-        marquee: 'marquee var(--duration) linear infinite',
-        'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
       },
     },
   },

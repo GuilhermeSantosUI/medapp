@@ -35,7 +35,7 @@ const schema = z
     }
   });
 
-export function ResetPassword() {
+export function Security() {
   const [currentPassword, setCurrentPassword] = useState(true);
   const [newPassword, setNewPassword] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState(true);
@@ -63,7 +63,7 @@ export function ResetPassword() {
   }
 
   return (
-    <div className="animate-slidein300 opacity-0 ">
+    <div className="animate-slidein200 opacity-0 ">
       <div>
         <h3 className="text-lg font-medium">Atualizar senha</h3>
         <p className="text-sm text-muted-foreground">

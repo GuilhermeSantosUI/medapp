@@ -7,9 +7,9 @@ import * as z from 'zod';
 
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
+import { Label } from '@/views/components/ui/label';
 import { Separator } from '@/views/components/ui/separator';
 import { SpinnerGap } from '@phosphor-icons/react';
-import { Label } from '@/views/components/ui/label';
 
 const schema = z.object({
   personType: z.enum(['Pessoa Jurídica', 'Pessoa Física'], {
@@ -67,7 +67,7 @@ export function Personal() {
   }
 
   return (
-    <div className="animate-slidein300 opacity-0 ">
+    <div className="animate-slidein200 opacity-0">
       <div>
         <h3 className="text-lg font-medium">Dados Pessoais</h3>
         <p className="text-sm text-gray-400">

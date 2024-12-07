@@ -6,9 +6,13 @@ export function Router() {
   return (
     <Routes>
       <Route path="/login" element={<Environment.SignIn />} />
+      <Route path="/forgot-password" element={<Environment.ForgotPassword />} />
+      <Route path="/reset-password" element={<Environment.ResetPassword />} />
 
       <Route element={<Layout.Default />}>
         <Route path="/" element={<Environment.Dashboard />} />
+        <Route path="/certificates" element={<Environment.Certificates />} />
+        <Route path="/newsroom" element={<Environment.News />} />
 
         <Route path="/certificate">
           <Route path="" element={<Navigate to="date" />} />
@@ -23,7 +27,7 @@ export function Router() {
           <Route path="" element={<Navigate to="user-data" />} />
 
           <Route path="user-data" element={<Environment.Personal />} />
-          <Route path="security" element={<Environment.ResetPassword />} />
+          <Route path="security" element={<Environment.Security />} />
         </Route>
       </Route>
     </Routes>

@@ -1,12 +1,27 @@
 import { Button } from '@/views/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from '@/views/components/ui/dropdown-menu';
-import { ArrowRight, Lightning, Users } from '@phosphor-icons/react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from '@/views/components/ui/dropdown-menu';
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from '@/views/components/ui/menubar';
+import { ArrowRight, Lightning } from '@phosphor-icons/react';
 import { Link, NavLink } from 'react-router-dom';
 
 export function Header() {
   return (
     <div className="sticky top-0 backdrop-blur-md bg-white/30 z-[99999999]">
-      <header className="p-4 flex items-center border-b justify-between gap-2">
+      <header className="p-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-4">
           <img src="/grupo-ssma.png" className="w-32 mr-2" />
 
@@ -16,15 +31,11 @@ export function Header() {
                 asChild
                 variant="secondary"
                 className="rounded-xl flex items-center justify-center gap-2">
-                <NavLink to="/management">
+                <NavLink to="/">
                   <p className="leading-3">Início</p>
                 </NavLink>
               </Button>
-              <Button asChild variant="ghost" className="rounded-xl">
-                <NavLink to="/consumer">
-                  <Users size={20} />
-                </NavLink>
-              </Button>
+
               <Button asChild variant="ghost" className="rounded-xl">
                 <NavLink to="/newsroom">
                   <Lightning size={20} />
@@ -83,6 +94,21 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      <Menubar className="px-2">
+        <MenubarMenu>
+          <MenubarTrigger>Atestados</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem asChild>
+              <NavLink
+                className="active:scale-95 aria-[current=page]:bg-primary aria-[current=page]:text-white cursor-pointer transition-all"
+                to="/certificates">
+                Gerênciar
+              </NavLink>
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
     </div>
   );
 }

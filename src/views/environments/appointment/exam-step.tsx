@@ -9,7 +9,7 @@ export function ExamStep() {
     <>
       <hr className="border-b-[10px] border-[#f5f5f5]" />
 
-      <div className="container max-w-[1024px] flex-auto flex flex-col py-6">
+      <div className="animate-slidein600 opacity-0 container max-w-[1024px] flex-auto flex flex-col py-6">
         <div className="flex items-center gap-2">
           <Button className="rounded-xl flex items-center justify-center gap-2">
             <p className="font-normal">6/8</p>
@@ -62,6 +62,7 @@ export function ExamStep() {
 }
 
 import { useState } from 'react';
+import { Input } from '@/views/components/ui/input';
 
 const exams = [
   { name: 'ACUIDADE VISUAL', description: 'Exame de acuidade visual' },
@@ -121,7 +122,7 @@ export default function ExamList() {
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
-        <input
+        <Input
           type="text"
           placeholder="Pesquisar exames..."
           value={search}
@@ -134,7 +135,8 @@ export default function ExamList() {
         {filteredExams.map((exam) => (
           <div
             key={exam.name}
-            className={`border rounded-xl px-4 py-2 flex items-center justify-between transition-colors ${
+            onClick={() => handleCheckboxChange(exam.name)}
+            className={`border rounded-xl px-4 py-2 flex items-center justify-between transition-colors cursor-pointer ${
               selectedExams.includes(exam.name)
                 ? 'border-primary bg-primary-50'
                 : ''
@@ -147,7 +149,7 @@ export default function ExamList() {
             <input
               type="checkbox"
               checked={selectedExams.includes(exam.name)}
-              onChange={() => handleCheckboxChange(exam.name)}
+              onChange={(e) => e.stopPropagation()}
               className="w-5 h-5 cursor-pointer"
             />
           </div>

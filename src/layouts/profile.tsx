@@ -23,7 +23,7 @@ export function Profile() {
       <hr className="border-b-[10px] border-[#f5f5f5]" />
 
       <div className="container flex flex-col justify-between">
-        <header className="animate-slidein300 opacity-0 mt-6 flex items-center justify-between mb-6">
+        <header className="animate-slidein200 opacity-0 mt-6 flex items-center justify-between mb-6">
           <div>
             <h1 className="mt-2 text-2xl font-medium tracking-tight text-slate-900 dark:text-slate-100">
               Perfil do usuário
@@ -36,7 +36,7 @@ export function Profile() {
           <div className="flex items-center gap-2" />
         </header>
 
-        <div className="animate-slidein500 opacity-0 flex flex-1 flex-col space-y-8 overflow-auto lg:flex-row lg:space-x-12 lg:space-y-0">
+        <div className="animate-slidein600 opacity-0 flex flex-1 flex-col space-y-8 overflow-auto lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="sticky top-0 lg:w-1/5">
             <SidebarNav items={sidebarNavItems} />
           </aside>

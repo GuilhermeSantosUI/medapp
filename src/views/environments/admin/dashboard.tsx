@@ -2,7 +2,6 @@ import { endOfDay } from 'date-fns';
 
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -47,21 +46,21 @@ export function Dashboard() {
             <AsoCompliance />
           </div>
 
-          <Card x-chunk="dashboard-05-chunk-3">
-            <CardHeader className="px-7 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Exames com alterações</CardTitle>
-                <CardDescription>
-                  Exames com alterações identificados para atenção imediata.
-                </CardDescription>
-              </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-lg font-medium">Exames com alterações</h1>
+              <p className="font-normal text-gray-400">
+                Exames com alterações identificados para atenção imediata.
+              </p>
+            </div>
 
-              <Input className="max-w-sm" />
-            </CardHeader>
-            <CardContent>
-              <AsoTable />
-            </CardContent>
-          </Card>
+            <Input
+              className="max-w-64"
+              placeholder="Pesquisar por atestado..."
+            />
+          </div>
+
+          <AsoTable />
         </div>
       </main>
     </div>

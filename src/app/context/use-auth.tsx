@@ -47,6 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
     setToken(null);
     setIsTokenExpired(true);
+    setIsAuth(false);
     localStorage.removeItem(localStorageKeys.USER_DATA);
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
   }

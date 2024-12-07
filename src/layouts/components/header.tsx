@@ -1,3 +1,4 @@
+import { useAuth } from '@/app/context/use-auth';
 import { Button } from '@/views/components/ui/button';
 import {
   DropdownMenu,
@@ -5,7 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/views/components/ui/dropdown-menu';
 import {
@@ -19,6 +19,8 @@ import { ArrowRight, Lightning } from '@phosphor-icons/react';
 import { Link, NavLink } from 'react-router-dom';
 
 export function Header() {
+  const { handleLogout } = useAuth();
+
   return (
     <div className="sticky top-0 backdrop-blur-md bg-white/30 z-[99999999]">
       <header className="p-4 flex items-center justify-between gap-2">
@@ -85,10 +87,7 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  Sair
-                  <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

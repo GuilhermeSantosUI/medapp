@@ -1,4 +1,7 @@
-import { cpfMask } from '@/app/utils';
+import { useAuth } from '@/app/context/use-auth';
+import { AuthProps } from '@/app/models';
+import { authService } from '@/app/services/authorization';
+import { cpfCnpjMask } from '@/app/utils';
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
 import { InputFormItem } from '@/views/components/ui/input-form-item';
@@ -11,35 +14,63 @@ import { Link } from 'react-router-dom';
 import * as z from 'zod';
 
 const schema = z.object({
-  login: z
+  cpf_cnpj: z
     .string({
       required_error: 'Esse campo não pode ser nulo.',
     })
     .min(1, { message: 'Insira valores nesse campo.' })
-    .refine((cpf: string) => {
-      if (typeof cpf !== 'string') return false;
+    .refine((value: string) => {
+      if (typeof value !== 'string') return false;
 
-      cpf = cpf.replace(/[^\d]+/g, '');
+      value = value.replace(/[^\d]+/g, '');
 
-      if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
+      if (value.length === 11) {
+        // CPF validation
+        if (value.match(/(\d)\1{10}/)) return false;
 
-      const cpfDigits = cpf.split('').map((el) => +el);
+        const cpfDigits = value.split('').map((el) => +el);
 
-      function handleRest(count: number): number {
+        function handleRest(count: number): number {
+          return (
+            ((cpfDigits
+              .slice(0, count - 12)
+              .reduce((sum, el, index) => sum + el * (count - index), 0) *
+              10) %
+              11) %
+            10
+          );
+        }
+
         return (
-          ((cpfDigits
-            .slice(0, count - 12)
-            .reduce((sum, el, index) => sum + el * (count - index), 0) *
-            10) %
-            11) %
-          10
+          handleRest(10) === cpfDigits[9] && handleRest(11) === cpfDigits[10]
+        );
+      } else if (value.length === 14) {
+        // CNPJ validation
+        if (value.match(/(\d)\1{13}/)) return false;
+
+        const cnpjDigits = value.split('').map((el) => +el);
+
+        function handleRest(count: number): number {
+          const length = count - 7;
+          const numbers = cnpjDigits.slice(0, length);
+
+          const sum = numbers.reduce(
+            (acc, num, index) => acc + num * (length + 1 - index),
+            0,
+          );
+
+          const rest = sum % 11;
+
+          return rest < 2 ? 0 : 11 - rest;
+        }
+
+        return (
+          handleRest(12) === cnpjDigits[12] && handleRest(13) === cnpjDigits[13]
         );
       }
 
-      return (
-        handleRest(10) === cpfDigits[9] && handleRest(11) === cpfDigits[10]
-      );
-    }, 'Digite um CPF válido.'),
+      return false;
+    }, 'Digite um CPF ou CNPJ válido.'),
   password: z
     .string({
       required_error: 'Este campo não pode ser vazio.',
@@ -50,21 +81,29 @@ const schema = z.object({
 });
 
 export function SignIn() {
+  const { handleLogin } = useAuth();
   const [passwordType, setPasswordType] = useState(true);
 
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      login: '',
+      cpf_cnpj: '',
       password: '',
     },
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async () => {},
+    mutationFn: async (props: AuthProps) => {
+      const response = await authService.auth(props);
+      if (response) {
+        handleLogin(response);
+      } else {
+        console.error('Authentication failed: response is null');
+      }
+    },
   });
 
-  function onSubmit(data: any) {
+  function onSubmit(data: AuthProps) {
     mutate(data);
   }
 
@@ -84,15 +123,15 @@ export function SignIn() {
                 onSubmit={form.handleSubmit(onSubmit)}>
                 <InputFormItem
                   control={form.control}
-                  name="login"
+                  name="cpf_cnpj"
                   label="CPF/CNPJ"
                   type="text"
                   className="h-fit px-4 py-2 text-base"
                   onChange={(e) => {
-                    form.setValue('login', cpfMask(e.target.value));
+                    form.setValue('cpf_cnpj', cpfCnpjMask(e.target.value));
                   }}
                   tabIndex={1}
-                  placeholder="000.###.###-00"
+                  placeholder="Insira seu CPF ou CNPJ"
                   required
                 />
 
@@ -128,7 +167,7 @@ export function SignIn() {
                 <Button
                   type="submit"
                   className="w-full rounded-xl flex items-center justify-between gap-1 sm:!h-11">
-                  Entrar com CPF
+                  Entrar com CPF/CNPJ
                   {isPending ? (
                     <SpinnerGap className="w-5 h-5 animate-spin" />
                   ) : (

@@ -1,18 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, ReactNode, useContext, useState } from 'react';
+import { localStorageKeys } from '../config/local-storage-keys';
+import { AuthResponseProps } from '../models';
 
 type AuthContextType = {
   user: User | null;
   token: string | null;
-  handleLogin: (userData: User, token: string, tokenExpiration: string) => void;
+  handleLogin: (props: AuthResponseProps) => void;
   handleLogout: () => void;
   isTokenExpired: boolean;
+  isAuth: boolean;
 };
 
 type User = {
@@ -30,58 +27,40 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [tokenExpiration, setTokenExpiration] = useState<string | null>(null);
   const [isTokenExpired, setIsTokenExpired] = useState(false);
+  const [isAuth, setIsAuth] = useState(false);
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedExpiration = localStorage.getItem('tokenExpiration');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedExpiration && storedUser) {
-      const expirationTime = new Date(storedExpiration);
-      if (new Date() > expirationTime) {
-        handleLogout();
-      } else {
-        setToken(storedToken);
-        setTokenExpiration(storedExpiration);
-        setUser(JSON.parse(storedUser));
-      }
-    }
-
-    function checkTokenExpiration() {
-      if (tokenExpiration && new Date() > new Date(tokenExpiration)) {
-        handleLogout();
-      }
-    }
-
-    const interval = setInterval(checkTokenExpiration, 30000);
-
-    return () => clearInterval(interval);
-  }, [tokenExpiration]);
-
-  function handleLogin(userData: User, token: string, tokenExpiration: string) {
+  function handleLogin(props: AuthResponseProps) {
+    const userData = {
+      id: props.id,
+      name: props.name,
+      email: props.email,
+    };
     setUser(userData);
-    setToken(token);
-    setTokenExpiration(tokenExpiration);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', token);
-    localStorage.setItem('tokenExpiration', tokenExpiration);
+    setToken(props.api_token);
+    setIsAuth(true);
+    localStorage.setItem(localStorageKeys.USER_DATA, JSON.stringify(userData));
+    localStorage.setItem(localStorageKeys.ACCESS_TOKEN, props.api_token);
   }
 
   function handleLogout() {
     setUser(null);
     setToken(null);
-    setTokenExpiration(null);
     setIsTokenExpired(true);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('tokenExpiration');
+    localStorage.removeItem(localStorageKeys.USER_DATA);
+    localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
   }
 
   return (
     <AuthContext.Provider
-      value={{ user, token, handleLogin, handleLogout, isTokenExpired }}>
+      value={{
+        user,
+        token,
+        handleLogin,
+        handleLogout,
+        isTokenExpired,
+        isAuth,
+      }}>
       {children}
     </AuthContext.Provider>
   );

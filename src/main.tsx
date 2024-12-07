@@ -11,15 +11,18 @@ import { App } from './App';
 setDefaultOptions({ locale: ptBR });
 
 import { Toaster } from '@/views/components/ui/sonner';
-import './styles/index.css';
+import { AuthProvider } from '@/app/context/use-auth';
+import '@/styles/index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <Toaster richColors/>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+      <AuthProvider>
+        <Toaster richColors />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 );

@@ -2,7 +2,7 @@
 import { localStorageKeys } from '@/app/config/local-storage-keys';
 import { AuthProps } from '@/app/models';
 import { api } from '@/app/services';
-import { authService } from '@/app/services/auth';
+import { clientService } from '@/app/services/client';
 import {
   createContext,
   ReactNode,
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isAuth, setIsAuth] = useState(false);
 
   const signIn = useCallback(async (params: AuthProps) => {
-    const props = await authService.auth(params);
+    const props = await clientService.auth(params);
 
     if (!props) {
       toast.error('Falha na autenticação');

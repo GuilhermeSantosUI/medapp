@@ -1,5 +1,5 @@
 import { auth } from './auth';
 
-export const authService = {
+export const clientService = {
   auth,
 };

@@ -1,6 +1,6 @@
 import { useAuth } from '@/app/context/use-auth';
-import * as Layout from '@/layouts';
 import * as Environment from '@/views';
+import * as Layout from '@/views/layouts';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 
 export function Router() {

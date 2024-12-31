@@ -1,15 +1,19 @@
 /* eslint-disable react-refresh/only-export-components */
 import { localStorageKeys } from '@/app/config/local-storage-keys';
 import { AuthProps } from '@/app/models';
+import { api } from '@/app/services';
+import { authService } from '@/app/services/auth';
 import {
   createContext,
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { toast } from 'sonner';
-import { authService } from '../services/auth';
+
+import { jwtDecode } from 'jwt-decode';
 
 type AuthContextType = {
   user: User | null;
@@ -33,7 +37,9 @@ type AuthProviderProps = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(
+    JSON.parse(localStorage.getItem(localStorageKeys.USER_DATA) || '{}'),
+  );
   const [token, setToken] = useState<string | null>(null);
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
@@ -58,6 +64,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     localStorage.setItem(localStorageKeys.USER_DATA, JSON.stringify(userData));
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, props.api_token);
+    api.defaults.headers.Authorization = `Bearer ${props.api_token}`;
   }, []);
 
   const signOut = useCallback(() => {
@@ -68,6 +75,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem(localStorageKeys.USER_DATA);
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem(localStorageKeys.ACCESS_TOKEN);
+
+    if (!token || checkTokenExpiration(token)) {
+      signOut();
+      return;
+    }
+
+    setToken(token);
+    setIsAuth(true);
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+  }, [signOut]);
 
   return (
     <AuthContext.Provider
@@ -92,4 +112,17 @@ export function useAuth() {
   }
 
   return context;
+}
+
+function checkTokenExpiration(token: string) {
+  if (!token) return true;
+
+  try {
+    const { exp } = jwtDecode(token) as { exp: number };
+    const currentTime = Math.floor(Date.now() / 1000);
+    return exp < currentTime;
+  } catch (error) {
+    console.error('Invalid token:', error);
+    return true;
+  }
 }

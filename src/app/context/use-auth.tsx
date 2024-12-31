@@ -1,13 +1,21 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, ReactNode, useContext, useState } from 'react';
-import { localStorageKeys } from '../config/local-storage-keys';
-import { AuthResponseProps } from '../models';
+import { localStorageKeys } from '@/app/config/local-storage-keys';
+import { AuthProps } from '@/app/models';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
+import { toast } from 'sonner';
+import { authService } from '../services/auth';
 
 type AuthContextType = {
   user: User | null;
   token: string | null;
-  handleLogin: (props: AuthResponseProps) => void;
-  handleLogout: () => void;
+  signIn: (props: AuthProps) => Promise<void>;
+  signOut: () => void;
   isTokenExpired: boolean;
   isAuth: boolean;
 };
@@ -30,35 +38,44 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isTokenExpired, setIsTokenExpired] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
 
-  function handleLogin(props: AuthResponseProps) {
+  const signIn = useCallback(async (params: AuthProps) => {
+    const props = await authService.auth(params);
+
+    if (!props) {
+      toast.error('Falha na autenticação');
+      throw new Error('Authentication failed: props is null');
+    }
+
     const userData = {
       id: props.id,
       name: props.name,
       email: props.email,
     };
+
     setUser(userData);
     setToken(props.api_token);
     setIsAuth(true);
+
     localStorage.setItem(localStorageKeys.USER_DATA, JSON.stringify(userData));
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, props.api_token);
-  }
+  }, []);
 
-  function handleLogout() {
+  const signOut = useCallback(() => {
     setUser(null);
     setToken(null);
     setIsTokenExpired(true);
     setIsAuth(false);
     localStorage.removeItem(localStorageKeys.USER_DATA);
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
-  }
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         token,
-        handleLogin,
-        handleLogout,
+        signIn,
+        signOut,
         isTokenExpired,
         isAuth,
       }}>

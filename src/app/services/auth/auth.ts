@@ -11,7 +11,7 @@ export async function auth(
     params as Record<string, string>,
   ).toString();
 
-  const url = `/auth?${queryString}`;
+  const url = `/client/auth?${queryString}`;
 
   const { data } = await api.post<AuthResponseProps>(url, { signal });
 

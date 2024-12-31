@@ -1,6 +1,5 @@
 import { useAuth } from '@/app/context/use-auth';
 import { AuthProps } from '@/app/models';
-import { authService } from '@/app/services/authorization';
 import { cpfCnpjMask } from '@/app/utils';
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
@@ -11,6 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -81,7 +81,7 @@ const schema = z.object({
 });
 
 export function SignIn() {
-  const { handleLogin } = useAuth();
+  const { signIn } = useAuth();
   const [passwordType, setPasswordType] = useState(true);
 
   const form = useForm({
@@ -94,12 +94,13 @@ export function SignIn() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (props: AuthProps) => {
-      const response = await authService.auth(props);
-      if (response) {
-        handleLogin(response);
-      } else {
-        console.error('Authentication failed: response is null');
-      }
+      await signIn(props);
+    },
+    onError: (error) => {
+      console.error('Authentication failed: response is null');
+      toast.error('Falha ao autenticar. Tente novamente.', {
+        description: error.message,
+      });
     },
   });
 

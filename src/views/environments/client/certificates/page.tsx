@@ -1,5 +1,6 @@
 import { endOfDay } from 'date-fns';
 
+import { clientService } from '@/app/services/client';
 import { Badge } from '@/views/components/ui/badge';
 import {
   Table,
@@ -9,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/views/components/ui/table';
+import { useQuery } from '@tanstack/react-query';
 import { Manage } from './manage';
 
 // Dados para popular a tabela
@@ -51,6 +53,13 @@ const data = [
 ];
 
 export function Certificates() {
+  const { data: getAllExams } = useQuery({
+    queryKey: ['getAllExams'],
+    queryFn: clientService.getAllExams,
+  });
+
+  console.log(getAllExams);
+
   return (
     <div>
       <div className="animate-slidein200 opacity-0 flex items-end justify-start gap-2 py-8 px-4 pb-6 border-b">

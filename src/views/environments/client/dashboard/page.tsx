@@ -49,6 +49,8 @@ export function Dashboard() {
     getFacetedRowModel: getFacetedRowModel(),
   });
 
+  console.log(warningExams);
+
   return (
     <div>
       <div className="animate-slidein200 opacity-0 flex items-end justify-start gap-2 py-8 px-4 pb-6 border-b">

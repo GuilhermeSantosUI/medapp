@@ -12,7 +12,7 @@ import {
   AsoCompliance,
   AsoFindDialog,
   AsoTable,
-} from '@/views/environments/admin/components';
+} from '@/views/environments/admin/dashboard/components';
 
 export function Dashboard() {
   return (

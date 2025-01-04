@@ -1,5 +1,7 @@
 import { endOfDay } from 'date-fns';
 
+import { dashboardService } from '@/app/services/dashboard';
+import { DataTable } from '@/views/components/data-table';
 import {
   Card,
   CardDescription,
@@ -8,13 +10,45 @@ import {
   CardTitle,
 } from '@/views/components/ui/card';
 import { Input } from '@/views/components/ui/input';
+import { useQuery } from '@tanstack/react-query';
+import { AsoCompliance, AsoFindDialog } from './components';
+
 import {
-  AsoCompliance,
-  AsoFindDialog,
-  AsoTable,
-} from '@/views/environments/admin/dashboard/components';
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
+import { useState } from 'react';
+import { columns } from './columns';
 
 export function Dashboard() {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const { data: warningExams } = useQuery({
+    queryKey: ['warningExams'],
+    queryFn: dashboardService.warningExams,
+  });
+
+  const table = useReactTable({
+    data: warningExams || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedRowModel: getFacetedRowModel(),
+  });
+
   return (
     <div>
       <div className="animate-slidein200 opacity-0 flex items-end justify-start gap-2 py-8 px-4 pb-6 border-b">
@@ -57,12 +91,14 @@ export function Dashboard() {
             <Input
               className="max-w-64"
               placeholder="Pesquisar por atestado..."
+              onChange={(event) =>
+                table.getColumn('name')?.setFilterValue(event.target.value)
+              }
             />
           </div>
-
-          <AsoTable />
         </div>
       </main>
+      <DataTable table={table} columns={columns} />
     </div>
   );
 }

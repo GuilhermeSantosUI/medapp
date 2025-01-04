@@ -1,13 +1,37 @@
 import { api } from '..';
 
-type WarningResponse = Array<any>;
+type WarningResponse = {
+  warning_exams: Array<ExamsResponse>;
+};
 
-export async function warningExams(): Promise<WarningResponse> {
+type ExamsResponse = {
+  id: number;
+  user_id: number;
+  branch_id: number;
+  client_id: number;
+  patient_id: number;
+  clinical_type_result_id: number;
+  department_id: number;
+  position_id: number;
+  aso_number: number;
+  aso_date: Date;
+  work_at_height: boolean;
+  confined_space: boolean;
+  sequential_audiometry: boolean;
+  observation: string;
+  status: number;
+  public: boolean;
+  deleted_at: Date;
+  created_at: Date;
+  updated_at: Date;
+};
+
+export async function warningExams(): Promise<Array<ExamsResponse>> {
   const { signal } = new AbortController();
 
   const { data } = await api.get<WarningResponse>(`/client/warning-exams`, {
     signal,
   });
 
-  return data;
+  return data.warning_exams;
 }

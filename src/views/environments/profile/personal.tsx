@@ -1,34 +1,41 @@
-import { InputFormItem } from '@/views/components/ui/input-form-item';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-
-import * as z from 'zod';
-
+import { clientService } from '@/app/services/client';
+import { cepMask, cpfCnpjMask, maskICMS, maskRGIE, phoneMask } from '@/app/utils';
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
+import { InputFormItem } from '@/views/components/ui/input-form-item';
 import { Label } from '@/views/components/ui/label';
 import { Separator } from '@/views/components/ui/separator';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { SpinnerGap } from '@phosphor-icons/react';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 const schema = z.object({
-  personType: z.enum(['Pessoa Jurídica', 'Pessoa Física'], {
-    required_error: 'Selecione o tipo de pessoa',
-  }),
-  cpf: z.string().min(11, 'O CPF deve ter 11 dígitos'),
-  fullName: z.string().min(1, 'O nome completo é obrigatório'),
-  rg: z.string().optional(),
-  primaryPhone: z.string().min(10, 'O telefone principal é obrigatório'),
-  secondaryPhone: z.string().optional(),
+  type: z.string().optional(),
+  name: z.string().min(1, 'O nome completo é obrigatório'),
+  name_fantasy: z.string().optional(),
+  cpf_cnpj: z.string().optional(),
+  rg_ie: z.string().optional(),
+  legal_nature: z.string().optional(),
+  icms: z.string().optional(),
+  iest: z.string().optional(),
+  municipal_registration: z.string().optional(),
+  phone1: z.string().min(14, 'O telefone principal é obrigatório'),
+  phone2: z.string().optional(),
   email: z.string().email('Digite um e-mail válido'),
-  cep: z.string().min(8, 'O CEP deve ter no mínimo 8 caracteres'),
-  street: z.string().min(1, 'O logradouro é obrigatório'),
+  url: z.string().optional(),
+  zipCode: z.string().min(9, 'O CEP deve ter no mínimo 9 caracteres'),
+  public_place: z.string().optional(),
   number: z.string().min(1, 'O número é obrigatório'),
   complement: z.string().optional(),
-  neighborhood: z.string().min(1, 'O bairro é obrigatório'),
+  district: z.string().min(1, 'O bairro é obrigatório'),
   city: z.string().min(1, 'A cidade é obrigatória'),
   state: z.string().min(2, 'O estado é obrigatório'),
-  ibgeCode: z.string().optional(),
+  img: z.string().optional(),
+  status: z.string().optional(),
+  ip_address: z.string().optional(),
 });
 
 export function Personal() {
@@ -36,21 +43,29 @@ export function Personal() {
     mode: 'onBlur',
     resolver: zodResolver(schema),
     defaultValues: {
-      personType: undefined,
-      cpf: '',
-      fullName: '',
-      rg: '',
-      primaryPhone: '',
-      secondaryPhone: '',
+      type: '',
+      name: '',
+      name_fantasy: '',
+      cpf_cnpj: '',
+      rg_ie: '',
+      legal_nature: '',
+      icms: '',
+      iest: '',
+      municipal_registration: '',
+      phone1: '',
+      phone2: '',
       email: '',
-      cep: '',
-      street: '',
+      url: '',
+      zipCode: '',
+      public_place: '',
       number: '',
       complement: '',
-      neighborhood: '',
+      district: '',
       city: '',
       state: '',
-      ibgeCode: '',
+      img: '',
+      status: '',
+      ip_address: '',
     },
   });
 
@@ -65,6 +80,37 @@ export function Personal() {
   function onSubmit(values: FormData) {
     submit.mutate(values);
   }
+
+  useEffect(() => {
+    clientService.verifyToken().then((res) => {
+      form.setValue('type', String(res.type));
+      form.setValue('name', String(res.name));
+      form.setValue('name_fantasy', String(res.name_fantasy));
+      form.setValue('cpf_cnpj', String(res.cpf_cnpj));
+      form.setValue('rg_ie', String(res.rg_ie));
+      form.setValue('legal_nature', String(res.legal_nature));
+      form.setValue('icms', String(res.icms));
+      form.setValue('iest', String(res.iest));
+      form.setValue(
+        'municipal_registration',
+        String(res.municipal_registration),
+      );
+      form.setValue('phone1', String(res.phone1));
+      form.setValue('phone2', String(res.phone2));
+      form.setValue('email', String(res.email));
+      form.setValue('url', String(res.url));
+      form.setValue('zipCode', String(res.zipCode));
+      form.setValue('public_place', String(res.public_place));
+      form.setValue('number', String(res.number));
+      form.setValue('complement', String(res.complement));
+      form.setValue('district', String(res.district));
+      form.setValue('city', String(res.city));
+      form.setValue('state', String(res.state));
+      form.setValue('img', String(res.img));
+      form.setValue('status', String(res.status));
+      form.setValue('ip_address', String(res.ip_address));
+    });
+  }, []);
 
   return (
     <div className="animate-slidein200 opacity-0">
@@ -88,10 +134,24 @@ export function Personal() {
             </Label>
 
             <div className="flex gap-4">
-              <Button variant="outline" className="w-full rounded-xl">
+              <Button
+                type="button"
+                variant={
+                  form.watch('type') === 'Pessoa Física' ? 'default' : 'outline'
+                }
+                className="w-full rounded-xl"
+                onClick={() => form.setValue('type', 'Pessoa Física')}>
                 Pessoa Física
               </Button>
-              <Button variant="outline" className="w-full rounded-xl">
+              <Button
+                type="button"
+                variant={
+                  form.watch('type') === 'Pessoa Jurídica'
+                    ? 'default'
+                    : 'outline'
+                }
+                className="w-full rounded-xl"
+                onClick={() => form.setValue('type', 'Pessoa Jurídica')}>
                 Pessoa Jurídica
               </Button>
             </div>
@@ -99,19 +159,29 @@ export function Personal() {
 
           <InputFormItem
             control={form.control}
-            name="fullName"
+            name="name"
             label="Nome completo"
             placeholder="Digite o nome completo"
             required
+          />
+
+          <InputFormItem
+            control={form.control}
+            name="name_fantasy"
+            label="Nome fantasia"
+            placeholder="Digite o nome fantasia (opcional)"
           />
 
           <div className="flex gap-4">
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="cpf"
-                label="CPF"
-                placeholder="Digite o CPF"
+                name="cpf_cnpj"
+                label="CPF/CNPJ"
+                placeholder="Digite o CPF ou CNPJ"
+                onChange={(e) => {
+                  form.setValue('cpf_cnpj', cpfCnpjMask(e.target.value));
+                }}
                 required
               />
             </div>
@@ -119,20 +189,66 @@ export function Personal() {
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="rg"
-                label="Registro Geral"
-                placeholder="Digite o RG (opcional)"
+                name="rg_ie"
+                label="RG/IE"
+                onChange={(e) => {
+                  form.setValue('rg_ie', maskRGIE(e.target.value));
+                }}
+                placeholder="Digite o RG ou IE (opcional)"
               />
             </div>
           </div>
+
+          <InputFormItem
+            control={form.control}
+            name="legal_nature"
+            label="Natureza Jurídica"
+            placeholder="Digite a natureza jurídica (opcional)"
+          />
 
           <div className="flex gap-4">
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="primaryPhone"
+                name="icms"
+                label="ICMS"
+                onChange={(e) => {
+                  form.setValue('icms', maskICMS(e.target.value));
+                }}
+                placeholder="Digite o ICMS (opcional)"
+              />
+            </div>
+
+            <div className="w-full flex flex-col gap-2">
+              <InputFormItem
+                control={form.control}
+                name="iest"
+                label="IEST"
+                onChange={(e) => {
+                  form.setValue('iest', maskICMS(e.target.value));
+                }}
+                placeholder="Digite o IEST (opcional)"
+              />
+            </div>
+          </div>
+
+          <InputFormItem
+            control={form.control}
+            name="municipal_registration"
+            label="Inscrição Municipal"
+            placeholder="Digite a inscrição municipal (opcional)"
+          />
+
+          <div className="flex gap-4">
+            <div className="w-full flex flex-col gap-2">
+              <InputFormItem
+                control={form.control}
+                name="phone1"
                 label="Telefone principal"
                 placeholder="Digite o telefone principal"
+                onChange={(e) => {
+                  form.setValue('phone1', phoneMask(e.target.value));
+                }}
                 required
               />
             </div>
@@ -140,9 +256,12 @@ export function Personal() {
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="secondaryPhone"
+                name="phone2"
                 label="Telefone auxiliar"
                 placeholder="Digite o telefone auxiliar (opcional)"
+                onChange={(e) => {
+                  form.setValue('phone2', phoneMask(e.target.value));
+                }}
               />
             </div>
           </div>
@@ -153,6 +272,13 @@ export function Personal() {
             label="E-mail"
             placeholder="Digite o e-mail"
             required
+          />
+
+          <InputFormItem
+            control={form.control}
+            name="url"
+            label="URL"
+            placeholder="Digite a URL (opcional)"
           />
 
           <div className="pb-4 border-b">
@@ -166,9 +292,12 @@ export function Personal() {
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="cep"
+                name="zipCode"
                 label="CEP"
                 placeholder="Digite o CEP"
+                onChange={e => {
+                  form.setValue('zipCode', cepMask(e.target.value));
+                }}
                 required
               />
             </div>
@@ -176,10 +305,9 @@ export function Personal() {
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="street"
+                name="public_place"
                 label="Logradouro"
-                placeholder="Digite o logradouro"
-                required
+                placeholder="Digite o logradouro (opcional)"
               />
             </div>
           </div>
@@ -201,7 +329,7 @@ export function Personal() {
 
           <InputFormItem
             control={form.control}
-            name="neighborhood"
+            name="district"
             label="Bairro"
             placeholder="Digite o bairro"
             required
@@ -231,9 +359,23 @@ export function Personal() {
 
           <InputFormItem
             control={form.control}
-            name="ibgeCode"
-            label="Código IBGE"
-            placeholder="Digite o código IBGE (opcional)"
+            name="img"
+            label="Imagem"
+            placeholder="Digite a URL da imagem (opcional)"
+          />
+
+          <InputFormItem
+            control={form.control}
+            name="status"
+            label="Status"
+            placeholder="Digite o status (opcional)"
+          />
+
+          <InputFormItem
+            control={form.control}
+            name="ip_address"
+            label="Endereço IP"
+            placeholder="Digite o endereço IP (opcional)"
           />
 
           <div className="py-4 gap-2">

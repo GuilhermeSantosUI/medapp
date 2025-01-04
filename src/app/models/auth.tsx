@@ -3,6 +3,11 @@ export type AuthProps = {
   password: string;
 };
 
+export type ForgotPasswordProps = {
+  cpf_cnpj: string;
+  email: string;
+};
+
 export type AuthResponseProps = {
   id: number;
   name: string;

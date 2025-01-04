@@ -1,59 +1,105 @@
+import { ForgotPasswordProps } from '@/app/models';
+import { clientService } from '@/app/services/client';
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
 import { InputFormItem } from '@/views/components/ui/input-form-item';
-import { InputOTPFormItem } from '@/views/components/ui/input-otp-form-item';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowUpRight, SpinnerGap } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
 const schema = z.object({
-  login: z
+  cpf_cnpj: z
+    .string({
+      required_error: 'Esse campo não pode ser nulo.',
+    })
+    .min(1, { message: 'Insira valores nesse campo.' })
+    .refine((value: string) => {
+      if (typeof value !== 'string') return false;
+
+      value = value.replace(/[^\d]+/g, '');
+
+      if (value.length === 11) {
+        // CPF validation
+        if (value.match(/(\d)\1{10}/)) return false;
+
+        const cpfDigits = value.split('').map((el) => +el);
+
+        function handleRest(count: number): number {
+          return (
+            ((cpfDigits
+              .slice(0, count - 12)
+              .reduce((sum, el, index) => sum + el * (count - index), 0) *
+              10) %
+              11) %
+            10
+          );
+        }
+
+        return (
+          handleRest(10) === cpfDigits[9] && handleRest(11) === cpfDigits[10]
+        );
+      } else if (value.length === 14) {
+        // CNPJ validation
+        if (value.match(/(\d)\1{13}/)) return false;
+
+        const cnpjDigits = value.split('').map((el) => +el);
+
+        function handleRest(count: number): number {
+          const length = count - 7;
+          const numbers = cnpjDigits.slice(0, length);
+
+          const sum = numbers.reduce(
+            (acc, num, index) => acc + num * (length + 1 - index),
+            0,
+          );
+
+          const rest = sum % 11;
+
+          return rest < 2 ? 0 : 11 - rest;
+        }
+
+        return (
+          handleRest(12) === cnpjDigits[12] && handleRest(13) === cnpjDigits[13]
+        );
+      }
+
+      return false;
+    }, 'Digite um CPF ou CNPJ válido.'),
+  email: z
     .string({
       required_error: 'Esse campo não pode ser nulo.',
     })
     .email('Insira um e-mail válido.'),
-  otp: z.string({
-    required_error: 'Esse campo não pode ser nulo.',
-  }),
 });
 
-const DEFAULT_OTP = '123456';
-
 export function ForgotPassword() {
-  const navigate = useNavigate();
-  const [step, setStep] = useState<'email' | 'otp'>('email');
-  const [isPending, setPending] = useState(false);
-
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      login: '',
-      otp: '',
+      cpf_cnpj: '',
+      email: '',
     },
   });
 
-  const onSubmit = async (data: any) => {
-    if (step === 'email') {
-      setPending(true);
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (props: ForgotPasswordProps) => {
+      const data = await clientService.forgotPassword(props);
+      toast.success(data);
+    },
+    onError: (error) => {
+      console.error('Authentication failed: response is null');
+      toast.error('Falha ao autenticar. Tente novamente.', {
+        description: error.message,
+      });
+    },
+  });
 
-      setTimeout(() => {
-        setPending(false);
-        toast.success('E-mail enviado com sucesso. Insira o código OTP.');
-        setStep('otp');
-      }, 2000);
-    } else if (step === 'otp') {
-      if (data.otp !== DEFAULT_OTP) {
-        toast.error('Código OTP incorreto. Tente novamente.');
-      } else {
-        toast.success('Código OTP válido. Redirecionando...');
-        navigate('/reset-password');
-      }
-    }
-  };
+  function onSubmit(data: ForgotPasswordProps) {
+    mutate(data);
+  }
 
   return (
     <div className="flex h-screen">
@@ -69,36 +115,35 @@ export function ForgotPassword() {
               <form
                 className="animate-slidein400 opacity-0 flex flex-col gap-4 my-4 border-slate-400"
                 onSubmit={form.handleSubmit(onSubmit)}>
-                {step === 'email' && (
-                  <InputFormItem
-                    control={form.control}
-                    name="login"
-                    label="E-mail"
-                    type="email"
-                    className="h-fit px-4 py-2 text-base"
-                    tabIndex={1}
-                    placeholder="Digite o seu e-mail"
-                    description="Insira o e-mail cadastrado para receber o código de verificação."
-                    required
-                  />
-                )}
+                <InputFormItem
+                  control={form.control}
+                  name="cpf_cnpj"
+                  label="CPF/CNPJ"
+                  type="text"
+                  className="h-fit px-4 py-2 text-base"
+                  tabIndex={1}
+                  placeholder="Digite o seu CPF ou CNPJ"
+                  description="Insira o CPF ou CNPJ cadastrado."
+                  required
+                />
 
-                {step === 'otp' && (
-                  <InputOTPFormItem
-                    control={form.control}
-                    className="animate-slidein400 opacity-0"
-                    name="otp"
-                    label="Insira o código de verificação"
-                    description="Enviamos um código de verificação para o seu e-mail. Insira o código para continuar."
-                    required
-                  />
-                )}
+                <InputFormItem
+                  control={form.control}
+                  name="email"
+                  label="E-mail"
+                  type="email"
+                  className="h-fit px-4 py-2 text-base"
+                  tabIndex={2}
+                  placeholder="Digite o seu e-mail"
+                  description="Insira o e-mail cadastrado para receber o link de redefinição de senha."
+                  required
+                />
 
                 <Button
                   type="submit"
                   className="w-full rounded-xl flex items-center justify-between gap-1 sm:!h-11"
                   disabled={isPending}>
-                  {step === 'email' ? 'Enviar E-mail' : 'Verificar Código'}
+                  Enviar E-mail
                   {isPending ? (
                     <SpinnerGap className="w-5 h-5 animate-spin" />
                   ) : (

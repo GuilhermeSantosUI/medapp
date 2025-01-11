@@ -1,17 +1,9 @@
-import { endOfDay } from 'date-fns';
-
+import { Manage } from './manage';
 import { clientService } from '@/app/services/client';
 import { Badge } from '@/views/components/ui/badge';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/views/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/views/components/ui/table';
 import { useQuery } from '@tanstack/react-query';
-import { Manage } from './manage';
+import { endOfDay } from 'date-fns';
 
 // Dados para popular a tabela
 const data = [

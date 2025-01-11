@@ -71,7 +71,7 @@ export const columns: ColumnDef<any>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="px-3">{row.getValue('nome')}</div>;
+      return <div className="px-3">{row.original.patient.name}</div>;
     },
   },
   {
@@ -88,7 +88,9 @@ export const columns: ColumnDef<any>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="px-3">{phoneMask(row.getValue('telefone'))}</div>;
+      return (
+        <div className="px-3">{phoneMask(row.original.patient.phone1)}</div>
+      );
     },
   },
   {
@@ -105,7 +107,7 @@ export const columns: ColumnDef<any>[] = [
       );
     },
     cell: ({ row }) => {
-      return <div className="px-3">{row.getValue('email')}</div>;
+      return <div className="px-3">{row.original.patient.email}</div>;
     },
   },
   {

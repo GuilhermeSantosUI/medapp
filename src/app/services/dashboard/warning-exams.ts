@@ -21,9 +21,22 @@ type ExamsResponse = {
   observation: string;
   status: number;
   public: boolean;
-  deleted_at: Date;
+  deleted_at: Date | null;
   created_at: Date;
   updated_at: Date;
+  patient: {
+    id: number;
+    name: string;
+    phone1: string;
+    email: string;
+  };
+  clinical_type_result: {
+    id: number;
+    name: string;
+    active: number;
+    created_at: Date | null;
+    updated_at: Date | null;
+  };
 };
 
 export async function warningExams(): Promise<Array<ExamsResponse>> {

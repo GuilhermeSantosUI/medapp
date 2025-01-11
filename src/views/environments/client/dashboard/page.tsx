@@ -1,9 +1,24 @@
 import { dashboardService } from '@/app/services/dashboard';
 import { DataTable } from '@/views/components/data-table';
-import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/views/components/ui/card';
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/views/components/ui/card';
 import { Input } from '@/views/components/ui/input';
 import { useQuery } from '@tanstack/react-query';
-import { getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable } from '@tanstack/react-table';
+import {
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  useReactTable,
+} from '@tanstack/react-table';
 import { endOfDay } from 'date-fns';
 import { useState } from 'react';
 
@@ -32,8 +47,6 @@ export function Dashboard() {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedRowModel: getFacetedRowModel(),
   });
-
-  console.log(warningExams);
 
   return (
     <div>
@@ -84,6 +97,7 @@ export function Dashboard() {
           </div>
         </div>
       </main>
+
       <DataTable table={table} columns={columns} />
     </div>
   );

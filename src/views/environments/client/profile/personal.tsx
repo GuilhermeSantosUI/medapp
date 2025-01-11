@@ -1,5 +1,11 @@
 import { clientService } from '@/app/services/client';
-import { cepMask, cpfCnpjMask, maskICMS, maskRGIE, phoneMask } from '@/app/utils';
+import {
+  cepMask,
+  cpfCnpjMask,
+  maskICMS,
+  maskRGIE,
+  phoneMask,
+} from '@/app/utils';
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
 import { InputFormItem } from '@/views/components/ui/input-form-item';
@@ -33,8 +39,6 @@ const schema = z.object({
   district: z.string().min(1, 'O bairro é obrigatório'),
   city: z.string().min(1, 'A cidade é obrigatória'),
   state: z.string().min(2, 'O estado é obrigatório'),
-  img: z.string().optional(),
-  status: z.string().optional(),
   ip_address: z.string().optional(),
 });
 
@@ -63,8 +67,6 @@ export function Personal() {
       district: '',
       city: '',
       state: '',
-      img: '',
-      status: '',
       ip_address: '',
     },
   });
@@ -83,32 +85,27 @@ export function Personal() {
 
   useEffect(() => {
     clientService.verifyToken().then((res) => {
-      form.setValue('type', String(res.type));
-      form.setValue('name', String(res.name));
-      form.setValue('name_fantasy', String(res.name_fantasy));
-      form.setValue('cpf_cnpj', String(res.cpf_cnpj));
-      form.setValue('rg_ie', String(res.rg_ie));
-      form.setValue('legal_nature', String(res.legal_nature));
-      form.setValue('icms', String(res.icms));
-      form.setValue('iest', String(res.iest));
-      form.setValue(
-        'municipal_registration',
-        String(res.municipal_registration),
-      );
-      form.setValue('phone1', String(res.phone1));
-      form.setValue('phone2', String(res.phone2));
-      form.setValue('email', String(res.email));
-      form.setValue('url', String(res.url));
-      form.setValue('zipCode', String(res.zipCode));
-      form.setValue('public_place', String(res.public_place));
-      form.setValue('number', String(res.number));
-      form.setValue('complement', String(res.complement));
-      form.setValue('district', String(res.district));
-      form.setValue('city', String(res.city));
-      form.setValue('state', String(res.state));
-      form.setValue('img', String(res.img));
-      form.setValue('status', String(res.status));
-      form.setValue('ip_address', String(res.ip_address));
+      form.setValue('type', res.type ?? '');
+      form.setValue('name', res.name ?? '');
+      form.setValue('name_fantasy', res.name_fantasy ?? '');
+      form.setValue('cpf_cnpj', res.cpf_cnpj ?? '');
+      form.setValue('rg_ie', res.rg_ie ?? '');
+      form.setValue('legal_nature', res.legal_nature ?? '');
+      form.setValue('icms', res.icms ?? '');
+      form.setValue('iest', res.iest ?? '');
+      form.setValue('municipal_registration', res.municipal_registration ?? '');
+      form.setValue('phone1', res.phone1 ?? '');
+      form.setValue('phone2', res.phone2 ?? '');
+      form.setValue('email', res.email ?? '');
+      form.setValue('url', res.url ?? '');
+      form.setValue('zipCode', res.zipCode ?? '');
+      form.setValue('public_place', res.public_place ?? '');
+      form.setValue('number', res.number ?? '');
+      form.setValue('complement', res.complement ?? '');
+      form.setValue('district', res.district ?? '');
+      form.setValue('city', res.city ?? '');
+      form.setValue('state', res.state ?? '');
+      form.setValue('ip_address', res.ip_address ?? '');
     });
   }, []);
 
@@ -136,22 +133,16 @@ export function Personal() {
             <div className="flex gap-4">
               <Button
                 type="button"
-                variant={
-                  form.watch('type') === 'Pessoa Física' ? 'default' : 'outline'
-                }
+                variant={form.watch('type') === 'F' ? 'default' : 'outline'}
                 className="w-full rounded-xl"
-                onClick={() => form.setValue('type', 'Pessoa Física')}>
+                onClick={() => form.setValue('type', 'F')}>
                 Pessoa Física
               </Button>
               <Button
                 type="button"
-                variant={
-                  form.watch('type') === 'Pessoa Jurídica'
-                    ? 'default'
-                    : 'outline'
-                }
+                variant={form.watch('type') === 'J' ? 'default' : 'outline'}
                 className="w-full rounded-xl"
-                onClick={() => form.setValue('type', 'Pessoa Jurídica')}>
+                onClick={() => form.setValue('type', 'J')}>
                 Pessoa Jurídica
               </Button>
             </div>
@@ -295,7 +286,7 @@ export function Personal() {
                 name="zipCode"
                 label="CEP"
                 placeholder="Digite o CEP"
-                onChange={e => {
+                onChange={(e) => {
                   form.setValue('zipCode', cepMask(e.target.value));
                 }}
                 required
@@ -305,19 +296,19 @@ export function Personal() {
             <div className="w-full flex flex-col gap-2">
               <InputFormItem
                 control={form.control}
-                name="public_place"
-                label="Logradouro"
-                placeholder="Digite o logradouro (opcional)"
+                name="number"
+                label="Número"
+                placeholder="Digite o número"
+                required
               />
             </div>
           </div>
 
           <InputFormItem
             control={form.control}
-            name="number"
-            label="Número"
-            placeholder="Digite o número"
-            required
+            name="public_place"
+            label="Logradouro"
+            placeholder="Digite o logradouro (opcional)"
           />
 
           <InputFormItem
@@ -356,20 +347,6 @@ export function Personal() {
               />
             </div>
           </div>
-
-          <InputFormItem
-            control={form.control}
-            name="img"
-            label="Imagem"
-            placeholder="Digite a URL da imagem (opcional)"
-          />
-
-          <InputFormItem
-            control={form.control}
-            name="status"
-            label="Status"
-            placeholder="Digite o status (opcional)"
-          />
 
           <InputFormItem
             control={form.control}

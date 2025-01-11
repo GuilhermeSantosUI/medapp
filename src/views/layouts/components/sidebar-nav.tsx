@@ -1,16 +1,8 @@
+import { cn } from '@/app/utils';
+import { buttonVariants } from '@/views/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/views/components/ui/select';
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/views/components/ui/select';
-import { buttonVariants } from '@/views/components/ui/button';
-
-import { cn } from '@/app/utils';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
   items: {
@@ -64,9 +56,9 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
               className={cn(
                 buttonVariants({ variant: 'ghost' }),
                 pathname === item.href
-                  ? 'bg-muted hover:bg-muted'
+                  ? 'bg-gray-100 hover:bg-gray-100'
                   : 'hover:bg-transparent hover:underline',
-                'justify-start aria-[current=page]:bg-muted transition-all duration-300 transform active:scale-95',
+                'justify-start aria-[current=page]:bg-gray-100 transition-all duration-300 transform active:scale-95',
               )}>
               <span className="mr-2">{item.icon}</span>
               {item.title}

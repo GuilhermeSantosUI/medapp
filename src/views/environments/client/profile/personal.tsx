@@ -16,6 +16,7 @@ import { SpinnerGap } from '@phosphor-icons/react';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 const schema = z.object({
@@ -75,7 +76,12 @@ export function Personal() {
 
   const submit = useMutation({
     mutationFn: async (data: FormData) => {
-      console.log(data);
+      try {
+        await clientService.update(data);
+        toast.success('Dados atualizados com sucesso');
+      } catch (error) {
+        toast.error('Erro ao atualizar os dados');
+      }
     },
   });
 

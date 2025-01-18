@@ -1,11 +1,6 @@
+import { VerifyTokenResponse } from '@/app/models';
 import { clientService } from '@/app/services/client';
-import {
-  cepMask,
-  cpfCnpjMask,
-  maskICMS,
-  maskRGIE,
-  phoneMask,
-} from '@/app/utils';
+import { cepMask, cpfCnpjMask, maskICMS, maskRGIE, phoneMask } from '@/app/utils';
 import { Button } from '@/views/components/ui/button';
 import { Form } from '@/views/components/ui/form';
 import { InputFormItem } from '@/views/components/ui/input-form-item';
@@ -14,7 +9,7 @@ import { Separator } from '@/views/components/ui/separator';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SpinnerGap } from '@phosphor-icons/react';
 import { useMutation } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -44,6 +39,8 @@ const schema = z.object({
 });
 
 export function Personal() {
+  const [data, setData] = useState<VerifyTokenResponse>();
+
   const form = useForm<z.infer<typeof schema>>({
     mode: 'onBlur',
     resolver: zodResolver(schema),
@@ -75,9 +72,14 @@ export function Personal() {
   type FormData = z.infer<typeof schema>;
 
   const submit = useMutation({
-    mutationFn: async (data: FormData) => {
+    mutationFn: async (params: FormData) => {
       try {
-        await clientService.update(data);
+        if (data) {
+          await clientService.update({ ...params, id: data.id });
+        } else {
+          toast.error('Erro: dados não carregados');
+        }
+
         toast.success('Dados atualizados com sucesso');
       } catch (error) {
         toast.error('Erro ao atualizar os dados');
@@ -112,6 +114,8 @@ export function Personal() {
       form.setValue('city', res.city ?? '');
       form.setValue('state', res.state ?? '');
       form.setValue('ip_address', res.ip_address ?? '');
+
+      setData(res);
     });
   }, []);
 

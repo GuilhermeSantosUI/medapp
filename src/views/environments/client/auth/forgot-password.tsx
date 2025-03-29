@@ -177,9 +177,13 @@ export function ForgotPassword() {
       />
 
       <div className="animate-slidein600 opacity-0 items-center justify-center flex-col hidden w-3/5 lg:flex">
-        <div className="h-4 w-[60%] bg-[#ECDACB] rounded-t-xl blur-md" />
-        <div className="h-8 w-[80%] backdrop-blur-sm bg-[#ECDACB] rounded-t-xl blur-sm" />
-        <img src="/bg-image-auth.png" alt="" className="container" />
+        <div className="h-4 w-[60%] bg-[#cdecff] rounded-t-xl blur-md" />
+        <div className="h-8 w-[80%] backdrop-blur-sm bg-[#cdecff] rounded-t-xl blur-sm" />
+        <img
+          src="/bg-forgot-password.png"
+          alt=""
+          className="container"
+        />
       </div>
     </div>
   );
